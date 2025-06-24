@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { CSSProperties } from 'react';
 import { Button, Rate } from 'antd';
 import './ProductCard.css';
+import AddToCartButton from '../../common/AddToCartButton';
 
 const productCardStyles: { 
     container: CSSProperties, 
@@ -62,13 +63,7 @@ const ProductCard = ({
           <span>({product.rating?.count || 0})</span>
         </div>
         <p>${product.price}</p>
-        <Button 
-          type='primary' 
-          style={productCardStyles.buttonStyle}
-          className="custom-button"
-        >
-          Add to Cart
-        </Button>
+        <AddToCartButton />
       </div>
     )
 }   

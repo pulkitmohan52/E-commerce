@@ -1,8 +1,10 @@
-import React from 'react'; 
+import React, { useEffect, useState } from 'react'; 
 import { Button, Input, Layout, Space, Typography } from 'antd';
 import { SearchOutlined, EnvironmentOutlined, ShoppingCartOutlined, CodeSandboxOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import Logo from '../../common/Logo';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
 const { Header: AntHeader } = Layout;
 const { Text } = Typography;
 
@@ -31,13 +33,11 @@ const headerStyles = {
   searchContainer: {
     flex: 1,
     margin: '0 24px',
-    maxWidth: '600px'
+    maxWidth: '600px',
+    position: 'relative' as const
   },
   searchInput: {
-    '.ant-input': {
-      // height: '40px',
-      borderRadius: '4px'
-    }
+    borderRadius: '4px'
   },
   loginButton: {
     width: '100px',
@@ -71,14 +71,50 @@ const headerStyles = {
     fontSize: '40px',
     color: '#fff',
     marginLeft: '10px'
+  },
+  searchResults: {
+    height: '30vh', 
+    backgroundColor: 'white',
+    overflowY: 'auto' as const, 
+    position: 'absolute' as const, 
+    top: '60px', 
+    zIndex: 10
+  },
+  searchResultItem: {
+    padding: '0px 10px', 
+    borderBottom: '1px solid #e0e0e0'
+  }, 
+  cartCount: {
+    position: 'absolute' as const, 
+    top: '5px', 
+    right: '2px', 
+    color: '#f0c14b'
   }
 };
 
-const handleSearch = (e) => {
-    console.log(e.target.value);
+type Product = {
+  title: string, 
 }
 
 const Header = () => {
+    const products = useSelector((state: RootState) => state.products.items); 
+    const [searchResults, setSearchResults] = useState('');
+    const [receivedProducts, setReceivedProducts] = useState([]);
+    const [filteredResults, setFilteredResults] = useState([]);
+
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchResults(e.target.value);
+    }
+
+    useEffect(() => {
+        setReceivedProducts(products); 
+    }, [products]);
+
+    useEffect(() => {
+        const filteredResults = receivedProducts.filter((product: Product) => product.title.toLowerCase().includes(searchResults.toLowerCase())); 
+        setFilteredResults(filteredResults); 
+    }, [searchResults]); 
+
     return (
         <Layout.Header style={{ padding: 0, height: 'auto' }}>
           <div style={headerStyles.topBar}>
@@ -90,13 +126,30 @@ const Header = () => {
           <div style={headerStyles.mainHeader}>
             <Logo />
             <div style={headerStyles.searchContainer}>
-              <Input 
-                size="large"
-                placeholder="Search Amazon" 
-                prefix={<SearchOutlined />}
-                style={headerStyles.searchInput}
-                onChange={(e) => handleSearch(e)}
-              />
+              <div>
+                <Input 
+                  size="large"
+                  placeholder="Search Amazon" 
+                  prefix={<SearchOutlined />}
+                  style={headerStyles.searchInput}
+                  onChange={(e) => handleSearch(e)}
+                />
+                {
+                  filteredResults && filteredResults.length > 0 &&(
+                    <div style={headerStyles.searchResults}>
+                    {
+                      filteredResults.map((product: Product) => {
+                        return (
+                          <div style={headerStyles.searchResultItem}>
+                            {product.title}
+                          </div>
+                        )
+                      })
+                    }
+                  </div>
+                  )
+                }
+              </div>
             </div>
             <div style={{display: 'flex', alignItems: 'center', width: '300px', gap: '30px'}}>
               <Link to="/login" style={headerStyles.loginLink}>
@@ -108,7 +161,9 @@ const Header = () => {
                   Login
                 </Button>
               </Link>
-              <ShoppingCartOutlined style={headerStyles.cartIcon} />
+              <ShoppingCartOutlined style={headerStyles.cartIcon}>
+                <span style={headerStyles.cartCount}>0</span>
+              </ShoppingCartOutlined>
               <CodeSandboxOutlined style={headerStyles.cartIcon} />
             </div>
           </div>

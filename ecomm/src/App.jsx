@@ -6,7 +6,9 @@ import Homepage from './components/HomePage'
 import Login from './components/Login'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import 'antd/dist/reset.css';
-import ProductDetailsPage from './components/ProductsPage';
+import ProductsPage from './components/ProductsPage';
+import ProductDetailsPage from './components/ProductDetailsPage';
+import Header from './components/Header';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -20,10 +22,12 @@ function App() {
 
   return (
     <BrowserRouter>
+      <Header />
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/products" element={<ProductDetailsPage />} />
+        <Route path="/products" element={<ProductsPage />} />
+        <Route path="/products/:id" element={<ProductDetailsPage />} />
       </Routes>
     </BrowserRouter>
   )

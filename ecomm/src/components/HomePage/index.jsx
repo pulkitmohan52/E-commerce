@@ -7,7 +7,6 @@ import ProductDetailsPage from '../ProductsPage';
 const HomePage = () => {
     return (
         <div>
-            <Header />
             <SlideShow />
             <ProductDetailsPage />
         </div>

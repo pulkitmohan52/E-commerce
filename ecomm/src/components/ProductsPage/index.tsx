@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/slice/ProductSlice'
 import { AppDispatch, RootState } from '../../redux/store';
 import ProductCard from '../ProductCard'
+import { Link } from 'react-router-dom';
 
 const productDetailsPageStyles = {
     container: {
@@ -51,10 +52,14 @@ const ProductDetailsPage = () => {
             <div style={productDetailsPageStyles.innerContainer}>
               <h1>Deals of the day</h1>
               <div style={productDetailsPageStyles.productContainer}>
-                {products && products.slice(0, 4).map((product: Product) => (
-                    <ProductCard product={product} />
+                {products && products/*.slice(0, 4)*/.map((product: Product) => (
+                    <>
+                      <Link to={`/products/${product.id}`}>
+                        <ProductCard product={product} />
+                      </Link>
+                    </>
                 ))}
-              </div>
+              </div>    
             </div>
         </div>
     )
