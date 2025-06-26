@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/slice/ProductSlice'
+import { fetchCartItems } from '../../redux/slice/CartSlice'; 
 import { AppDispatch, RootState } from '../../redux/store';
 import ProductCard from '../ProductCard'
 import { Link } from 'react-router-dom';
+import CartPage from '../CartPage';
 
 const productDetailsPageStyles = {
     container: {
@@ -37,15 +39,12 @@ type Product = {
 
 const ProductDetailsPage = () => {
     const dispatch = useDispatch<AppDispatch>(); 
-    const products: Product[] = useSelector((state: RootState) => state.products.items); 
+    const products: Product[] = useSelector((state: RootState) => state.products.items);
 
     useEffect(() => {
       dispatch(fetchProducts()); 
+      // dispatch(fetchCartItems()); 
     }, [dispatch]); 
-
-    useEffect(() => {
-      console.log(products); 
-    }, [products]); 
 
     return (
         <div style={productDetailsPageStyles.container}>
@@ -61,6 +60,7 @@ const ProductDetailsPage = () => {
                 ))}
               </div>    
             </div>
+            {/* <CartPage /> */}
         </div>
     )
 }

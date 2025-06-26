@@ -6,6 +6,7 @@ const logoStyles = {
     height: '70px',
     width: '120px',
     objectFit: 'contain', 
+    cursor: 'pointer',
 }
 
 const Logo = (

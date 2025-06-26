@@ -9,6 +9,7 @@ import 'antd/dist/reset.css';
 import ProductsPage from './components/ProductsPage';
 import ProductDetailsPage from './components/ProductDetailsPage';
 import Header from './components/Header';
+import CartPage from './components/CartPage';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -28,6 +29,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/products/:id" element={<ProductDetailsPage />} />
+        <Route path="/cart" element={<CartPage />} />
       </Routes>
     </BrowserRouter>
   )

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'; 
 import { Button, Input, Layout, Space, Typography } from 'antd';
 import { SearchOutlined, EnvironmentOutlined, ShoppingCartOutlined, CodeSandboxOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../../common/Logo';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
+import useDebounce from '../../hooks/useDebounce';
 const { Header: AntHeader } = Layout;
 const { Text } = Typography;
 
@@ -97,10 +98,12 @@ type Product = {
 }
 
 const Header = () => {
+    const navigate = useNavigate();
     const products = useSelector((state: RootState) => state.products.items); 
     const [searchResults, setSearchResults] = useState('');
     const [receivedProducts, setReceivedProducts] = useState([]);
     const [filteredResults, setFilteredResults] = useState([]);
+    const debouncedResults = useDebounce(searchResults, 500);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchResults(e.target.value);
@@ -113,7 +116,7 @@ const Header = () => {
     useEffect(() => {
         const filteredResults = receivedProducts.filter((product: Product) => product.title.toLowerCase().includes(searchResults.toLowerCase())); 
         setFilteredResults(filteredResults); 
-    }, [searchResults]); 
+    }, [debouncedResults, receivedProducts]); 
 
     return (
         <Layout.Header style={{ padding: 0, height: 'auto' }}>
@@ -124,7 +127,9 @@ const Header = () => {
             </Space>
           </div>
           <div style={headerStyles.mainHeader}>
-            <Logo />
+            <div onClick={() => navigate('/')}>
+              <Logo />
+            </div>
             <div style={headerStyles.searchContainer}>
               <div>
                 <Input 
@@ -135,7 +140,7 @@ const Header = () => {
                   onChange={(e) => handleSearch(e)}
                 />
                 {
-                  filteredResults && filteredResults.length > 0 &&(
+                  searchResults && filteredResults && filteredResults.length > 0 &&(
                     <div style={headerStyles.searchResults}>
                     {
                       filteredResults.map((product: Product) => {
@@ -161,9 +166,11 @@ const Header = () => {
                   Login
                 </Button>
               </Link>
-              <ShoppingCartOutlined style={headerStyles.cartIcon}>
-                <span style={headerStyles.cartCount}>0</span>
-              </ShoppingCartOutlined>
+              <Link to="/cart">
+                <ShoppingCartOutlined style={headerStyles.cartIcon}>
+                  <span style={headerStyles.cartCount}>0</span>
+                </ShoppingCartOutlined>
+              </Link>
               <CodeSandboxOutlined style={headerStyles.cartIcon} />
             </div>
           </div>
